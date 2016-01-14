@@ -14,3 +14,5 @@ Have all apps running within one space:
 [] trade-tariff-admin
 
 We'll need a massive manifest we'll see if this works...
+
+https://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html#multi-apps
