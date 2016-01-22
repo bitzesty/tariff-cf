@@ -1,0 +1,6 @@
+<% bootstrap_flash_message_keys.each do |k| %>
+  <%= content_tag :div,
+    flash[k],
+    class: "alert alert-#{bootstrap_flash_class(k)}",
+    data: track_analytics_data(bootstrap_flash_class(k), flash[k]) %>
+<% end %>

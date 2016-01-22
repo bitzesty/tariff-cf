@@ -1,0 +1,18 @@
+<% content_for :title, "Account locked" %>
+<% content_for :thin_form, true %>
+
+<div class="page-title">
+  <h1>Your account is locked</h1>
+</div>
+
+<div class="callout callout-danger" data-module="auto-track-event" data-track-action="alert-danger" data-track-label="Too many attempts">
+  <p class="lead">
+    Your account has been locked because an incorrect 2-step verification code was entered too many times.
+  </p>
+  <p>Your account will be unlocked at <%= Devise.unlock_in.from_now.to_s(:govuk_time)%></p>
+  <p>
+    If you need your account unlocked sooner, please contact a managing GOV.UK editor in your organisation
+    (or your parent organisation). They can either unlock your account themselves or use the support form
+    to get help from the GOV.UK team.
+  </p>
+</div>

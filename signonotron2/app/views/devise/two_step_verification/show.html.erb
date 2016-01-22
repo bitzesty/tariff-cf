@@ -1,0 +1,111 @@
+<% title = current_user.has_2sv? ? "Use a new phone" : "Set up 2-step verification" %>
+<% content_for :title, title %>
+<% invalid_code_entered = flash[:invalid_code] %>
+
+<h1><%= title %></h1>
+<div class="row">
+  <div class="col-md-8">
+    <% if current_user.has_2sv? %>
+      <div class="alert alert-warning">
+        <p>Setting up a new phone will replace your existing one. You will only be able to sign in with your new phone.</p>
+      </div>
+    <% end %>
+    <p class="lead">Make your signon account more secure by setting up 2-step verification. You’ll need to install an app on your phone which will generate a security code to enter when you sign in.</p>
+
+    <div class="panel-group" id="setup-steps" role="tablist" aria-multiselectable="true">
+      <div class="panel panel-part">
+        <div class="panel-heading" role="tab" id="step-one-heading">
+          <h4 class="panel-title">
+            <a role="button" data-toggle="collapse" data-parent="#setup-steps" href="#step-one" aria-expanded="true" aria-controls="step-one">
+              Install a verification app on your phone
+            </a>
+          </h4>
+        </div>
+        <div id="step-one" class="panel-collapse collapse <% unless invalid_code_entered %>in<% end %>" role="tabpanel" aria-labelledby="step-one-heading">
+          <div class="panel-body">
+            <p class="lead">Install one of the following apps from the app store on your phone.</p>
+            <ul class="list-group">
+              <li class="list-group-item">
+                <h4 class="list-group-item-heading">Google Authenticator</h4>
+                For iPhone, iPad, Android and Blackberry
+              </li>
+              <li class="list-group-item">
+                <h4 class="list-group-item-heading">Duo Mobile</h4>
+                For iPhone, iPad and Android
+              </li>
+              <li class="list-group-item">
+                <h4 class="list-group-item-heading">Windows Authenticator</h4>
+                For Windows phone
+              </li>
+            </ul>
+            <a class="collapsed btn btn-lg btn-success" role="button" data-toggle="collapse" data-parent="#setup-steps" href="#step-two" aria-expanded="false" aria-controls="step-two">
+              Next
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-part">
+        <div class="panel-heading" role="tab" id="step-two-heading">
+          <h4 class="panel-title">
+            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#setup-steps" href="#step-two" aria-expanded="false" aria-controls="step-two">
+              Scan the barcode using your app
+            </a>
+          </h4>
+        </div>
+        <div id="step-two" class="panel-collapse collapse" role="tabpanel" aria-labelledby="step-two-heading">
+          <div class="panel-body">
+            <p class="lead">In your app add a new account and scan the barcode:</p>
+            <ul class="list-group">
+              <li class="list-group-item">
+                <%= image_tag(qr_code_data_uri, width: 180) %>
+              </li>
+            </ul>
+            <p class="add-bottom-margin">Can’t use a barcode? Enter the code manually: <%= @otp_secret_key%></p>
+            <a class="collapsed btn btn-lg btn-success" role="button" data-toggle="collapse" data-parent="#setup-steps" href="#step-three" aria-expanded="false" aria-controls="step-three">
+              Next
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-part">
+        <div class="panel-heading" role="tab" id="step-three-heading">
+          <h4 class="panel-title">
+            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#setup-steps" href="#step-three" aria-expanded="false" aria-controls="step-three">
+              Enter the code from your phone
+            </a>
+          </h4>
+        </div>
+        <div id="step-three" class="panel-collapse collapse <% if invalid_code_entered %>in<% end %>" role="tabpanel" aria-labelledby="step-three-heading">
+          <div class="panel-body" data-module="track-click">
+              <% if invalid_code_entered %>
+                <%= content_tag :div,
+                  invalid_code_entered,
+                  class: 'alert alert-danger',
+                  data: track_analytics_data(:danger, invalid_code_entered) %>
+              <% end %>
+              <%= form_tag two_step_verification_path, method: :put do %>
+                <%= hidden_field_tag :otp_secret_key, @otp_secret_key%>
+                <div class="form-group <% if invalid_code_entered %>has-error text-danger<% end %>">
+                  <%= label_tag :code, 'Code from your phone' %>
+                  <%= text_field_tag :code, nil,
+                    class: 'form-control input-md-4 input-lg',
+                    placeholder: 'Enter 6-digit code',
+                    autocomplete: 'off' %>
+                </div>
+                <button name="submit" id="submit_code" class="btn btn-lg btn-success js-track">
+                  <% if current_user.has_2sv? %>
+                    Finish replacing your phone
+                  <% else %>
+                    Finish set up
+                  <% end %>
+                </button>
+                <% unless current_user.has_2sv? %>
+                  <a href="/" class="btn btn-lg btn-default add-left-margin js-track">Cancel</a>
+                <% end %>
+              <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

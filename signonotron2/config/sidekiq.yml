@@ -1,0 +1,11 @@
+# Sample configuration file for Sidekiq.
+# Options here can still be overridden by cmd line args.
+#   sidekiq -C config.yml
+---
+:verbose: true
+:concurrency:  2
+:logfile: ./log/sidekiq.log
+:queues:
+  - default
+  - mailer # Remove this once using `mailers` only.
+  - mailers
