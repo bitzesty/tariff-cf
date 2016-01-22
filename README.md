@@ -4,8 +4,10 @@ setup:
 
 https://documentation.trial.cf.paas.alphagov.co.uk/getting-started/setup/
 
+```
 cf target -o "tradetariff.gov.uk" -s "dev"
 cf target -o "tradetariff.gov.uk" -s "prod"
+```
 
 Plan:
 
