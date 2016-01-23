@@ -1,5 +1,11 @@
 require "sidekiq"
 
+if ENV['VCAP_SERVICES'].present?
+  services = JSON.parse(ENV['VCAP_SERVICES'])
+  credentials = services['redis'].first['credentials']
+  ENV['REDIS_URL'] = "redis://:#{credentials['password']}@#{credentials['host']}:#{credentials['port']}/"
+end
+
 redis_config = { namespace: "signon_sidekiq" }
 redis_config[:url] = ENV['REDIS_URL'] if ENV['REDIS_URL']
 
