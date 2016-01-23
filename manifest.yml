@@ -1,0 +1,24 @@
+---
+env:
+  RAILS_ENV: production
+  RACK_ENV: production
+  BUNDLE_WITHOUT: development,test
+  VERBOSE: true
+services:
+  - tariff_redis
+applications:
+- name: signonotron2
+  path: ./signonotron2/
+  command: bin/rake cf:on_first_instance db:migrate && bin/rails server -p $PORT -e $RAILS_ENV
+  env:
+    GOVUK_APP_DOMAIN: signonotron2.trial.cf.paas.alphagov.co.uk
+  services:
+    - signon_pg
+- name: signonotron2_sidekiq
+  path: ./signonotron2/
+  no-route: true
+  command: bin/bundle exec sidekiq -C ./config/sidekiq.yml
+  env:
+    GOVUK_APP_DOMAIN: signonotron2.trial.cf.paas.alphagov.co.uk
+  services:
+    - signon_pg
