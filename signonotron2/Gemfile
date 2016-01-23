@@ -76,3 +76,7 @@ group :test do
   gem 'shoulda-context', '1.2.1', require: false
   gem 'pry-byebug'
 end
+
+group :production do
+  gem 'rails_12factor'
+end
