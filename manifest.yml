@@ -9,9 +9,12 @@ services:
 applications:
 - name: signonotron2
   path: ./signonotron2/
-  command: bin/rake cf:on_first_instance db:migrate && bin/rails server -p $PORT -e $RAILS_ENV
+  command: bin/rake cf:on_first_instance db:schema:load db:seed && bin/rails server -p $PORT -e $RAILS_ENV
   env:
     GOVUK_APP_DOMAIN: signonotron2.trial.cf.paas.alphagov.co.uk
+    ADMIN_EMAIL: macool@bitzesty.com
+    DEVISE_SECRET_KEY: dfe362d9816b242bc9b9b29a719a3eb46e002bd301ffa4b08c5ca8b3f9965dba
+    SIGNONOTRON2_DB_ADAPTER: postgresql
   services:
     - signon_pg
 - name: signonotron2_sidekiq
@@ -20,5 +23,6 @@ applications:
   command: bin/bundle exec sidekiq -C ./config/sidekiq.yml
   env:
     GOVUK_APP_DOMAIN: signonotron2.trial.cf.paas.alphagov.co.uk
+    SIGNONOTRON2_DB_ADAPTER: postgresql
   services:
     - signon_pg
