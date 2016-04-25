@@ -1,27 +1,69 @@
-# trade-tariff-cf
+# Trade-Tariff running on CloudFoundry
 
-setup:
 
-https://documentation.trial.cf.paas.alphagov.co.uk/getting-started/setup/
 
-```
-cf target -o "tradetariff.gov.uk" -s "dev"
-cf target -o "tradetariff.gov.uk" -s "staging"
-cf target -o "tradetariff.gov.uk" -s "prod"
-```
+### Installing the CLI
 
-Plan:
+Interacting with Cloud Foundry is easiest through the cf command line interface.
+To install it please follow [this](https://documentation.trial.cf.paas.alphagov.co.uk/getting-started/setup/) instructions.
 
-Have all apps running within one space:
+### Log in with your account
 
-- [] use getsentry (hosted outside for now)
-- [] signonatron2
-- [] trade-tariff-backend
-- [] trade-tariff-frontend
-- [] trade-tariff-admin
+    cf login -a api.trial.cf.paas.alphagov.co.uk
 
-We'll need a massive manifest we'll see if this works...
+### Target organization and space
 
-https://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html#multi-apps
+The Cloud Foundry CLI keeps a global state of whatever organization+space you’re interacting with. This is known as the “target”.
 
-NB: the api target will change in a few weeks, and we will need to reload data again.
+To set the target to the `tradetariff.gov.uk` organization and the `dev` space:
+
+    cf target -o tradetariff.gov.uk -s dev
+
+## Deploying
+
+You deploy the application to Cloud Foundry by running a push command from a Cloud Foundry command line interface (CLI).
+
+You can define deployment options on the command line, in a manifest file, or both together.
+
+Cloud Foundry uploads all application files except version control files with file extensions .svn, .git, and .darcs. To exclude other files from upload, specify them in the `.cfignore` file.
+
+### Set Environment Variables
+
+You should set the enviroment variables before the deploy in order to avoid issues of missing keys.
+
+    cf set-env APP_NAME ENV_NAME ENV_VALUE
+
+
+### Pushing the Application
+
+Run the following command to deploy an application without a manifest file:
+
+    cf push APP-NAME
+
+If you provide the application name in a manifest file, you can reduce the command to `cf push`, the command cf push locates the `manifest.yml` in the current working directory by default, if your manifest is located elsewhere or has a different name, use the `-f` option to provide the path to the filename.
+
+    cf push -f /other-path/other-name.yml
+
+### Configure Service Connections
+
+If may need to define a service to bound to the application that you deployed, for example services like postgresql or redis are available, the way to add them is with the `create-service` option:
+
+for example `postgresql94`:
+
+    cf create-service postgresql94 free DESIRED-SERVICE-NAME
+
+And we can bind the new service created to our app:
+
+    cf bind-service APP-NAME DESIRED-SERVICE-NAME
+
+## Tailing Logs
+
+Stream Loggregator output to the terminal:
+
+    cf logs APP_NAME
+
+## ToDos
+
+ - Avoid Writing to the Local File System
+
+Applications running on Cloud Foundry should not write files to the local file system and during the sync process we download the files "locally", we need to use an alternative like Amazon S3 or store the contents in the DB.
