@@ -61,9 +61,3 @@ And we can bind the new service created to our app:
 Stream Loggregator output to the terminal:
 
     cf logs APP_NAME
-
-## ToDos
-
- - Avoid Writing to the Local File System
-
-Applications running on Cloud Foundry should not write files to the local file system and during the sync process we download the files "locally", we need to use an alternative like Amazon S3 or store the contents in the DB.
