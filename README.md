@@ -56,8 +56,13 @@ And we can bind the new service created to our app:
 
     cf bind-service APP-NAME DESIRED-SERVICE-NAME
 
-## Tailing Logs
+### Tailing Logs
 
 Stream Loggregator output to the terminal:
 
     cf logs APP_NAME
+    
+### Getting DB dump
+
+https://docs.cloud.service.gov.uk/#creating-tcp-tunnels-with-ssh
+    
